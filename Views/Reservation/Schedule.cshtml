@@ -1,0 +1,100 @@
+﻿@model Acupunctuur.Models.ReservationViewModel
+
+<h2 class="display-4 text-center">Afspraak maken</h2>
+
+<div class="text-center">
+    @using (Html.BeginForm("Reserve", "Reservation", FormMethod.Post)) {
+        @using Acupunctuur.Business
+        @inject SessionManager sessMan
+
+        string dateFormat = "yyyy-MM-dd";
+        string selectedDay = @Model.SelectedDay.ToString(dateFormat);
+
+        <div class="mt-3">
+            <div class="w-50 mx-auto text-left">
+                @if (!sessMan.IsLoggedIn()) {
+                    <p>Bent u een nieuwe patiënt? Dan is extra tijd inrekenen voor een goede diagnose noodzakelijk. Dit betekent dat u <u>een dubbel tijdsblok</u> dient te boeken. Dat kan alleen op de volgende tijden 08:30u, 10:30u en 14:30u mits het blok erna ook nog beschikbaar is.</p>
+                    <p><i>Om een reservering te maken, dient u zich te <a asp-controller="User" asp-action="Registration">registreren</a> of <a asp-controller="User" asp-action="Login">in te loggen</a> en daarna kunt u een dag kiezen en daarop een tijdsblok inboeken.</i></p>
+                    <p>Tarieven:</p>
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>1<sup>e</sup> consult (dubbel tijdsblok, dus anderhalf uur):</td>
+                            <td>€ 95,-</td>
+                        </tr>
+                        <tr>
+                            <td>Verdere consulten (drie kwartier): </td>
+                            <td>€ 64,-</td>
+                        </tr>
+                    </table>
+                    <p><i>De behandeltarieven worden zonder btw berekend. Over eventuele bijkomende kosten zoals extra materiaal en/of kruiden e.d. wordt wel BTW berekend. Indien uw zorgverzekeraar acupunctuur in het pakket heeft waarvoor u bent aangemerkt kunt u uw afhankelijk van uw dekking een deel terugvragen.</i></p>
+                } else if (Model.NewUser) {
+                    <p>Beste @sessMan.GetUserName(). Voor u als nieuwe patiënt, willen we graag wat extra tijd inrekenen voor een goede diagnose. Dit betekent dat u hieronder een dag kunt kiezen en daarop een van onderstaande beschikbare <u>extra lang tijdsblokken</u> kunt boeken.</p>
+                    <p>Tarieven:</p>
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>1<sup>e</sup> consult (dubbel tijdsblok, dus anderhalf uur):</td>
+                            <td>€ 95,-</td>
+                        </tr>
+                        <tr>
+                            <td>Verdere consulten (drie kwartier): </td>
+                            <td>€ 64,-</td>
+                        </tr>
+                    </table>
+                    <p><i>De behandeltarieven worden zonder btw berekend. Over eventuele bijkomende kosten zoals extra materiaal en/of kruiden e.d. wordt wel BTW berekend. Indien uw zorgverzekeraar acupunctuur in het pakket heeft waarvoor u bent aangemerkt kunt u uw afhankelijk van uw dekking een deel terugvragen.</i></p>
+                } else {
+                    <p>Beste @sessMan.GetUserName(), u kunt hieronder een dag kiezen en daarop een van onderstaande beschikbare tijdsblokken kunt boeken.  </p>
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>Tarief voor een consult (drie kwartier):</td>
+                            <td>€ 64,-</td>
+                        </tr>
+                    </table>
+                    <p><i>Het behandeltarief wordt zonder btw berekend. Over eventuele bijkomende kosten zoals extra materiaal en/of kruiden e.d. wordt wel BTW berekend. Indien uw zorgverzekeraar acupunctuur in het pakket heeft waarvoor u bent aangemerkt kunt u uw afhankelijk van uw dekking een deel terugvragen.</i></p>
+                }
+            </div>
+        </div>
+
+        <div class="mt-1">
+            <img id="yesterdayButton" style="cursor:pointer" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iYmxhY2siIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMTUuNDEgNy40MUwxNCA2bC02IDYgNiA2IDEuNDEtMS40MUwxMC44MyAxMnoiLz48L3N2Zz4=" />
+            <input type="date" id="dateField" name="date" value="@selectedDay" min="@selectedDay" max="@Model.LastDay.ToString(dateFormat)" />
+            <img id="tomorrowButton" style="cursor:pointer" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iYmxhY2siIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMTAgNkw4LjU5IDcuNDEgMTMuMTcgMTJsLTQuNTggNC41OUwxMCAxOGw2LTZ6Ii8+PC9zdmc+" />
+        </div>
+        <div class="mt-2">
+            <table class="table table-bordered w-25 mx-auto" id="timeslotTable">
+            </table>
+        </div>
+
+        <div>
+            <span class="mt-2 text-danger" style="display:none" id="weekendError">Selecteer een werkdag (maandag - vrijdag)</span>
+            <span class="mt-2 text-danger" style="display:none" id="selectionError">Selecteer tijdstip</span>
+        </div>
+
+        <div class="w-75 mx-auto">
+            <span class="mt-2 text-danger" id="blockedMessage"></span>
+        </div>
+
+        @if (sessMan.IsLoggedIn() && Model.HasAReservation) {
+            <div>
+                <span class="mt-2 text-danger" id="hasReservationError">U heeft al een reservering. Klanten mogen maximaal 1 reservering hebben staan.</span>
+            </div>
+        }
+        <div class="mt-2">
+            @if (sessMan.IsLoggedIn() && !Model.HasAReservation) {
+                <input type="submit" id="submitButton" value="Reserveren" />
+            } else {
+                <input type="submit" id="submitButton" value="Reserveren" disabled />
+            }
+        </div>
+        <div class="mt-5 w-50 text-left mx-auto">
+            <p class="text-center"><b>! Wet Algemene Verordening Gegevensbescherming !</b></p>
+            <p>Lees voorafgaande aan de reservering de pagina betreffende de bescherming van uw privé gegevens. Prikkebeen Acupunctuur geeft daar uitleg over welke gegevens van u nodig zijn om te kunnen werken en waarvoor deze worden gebruikt. Indien u reserveert geeft u daarmee aan op de hoogte te zijn van de wijze waarop Prikkebeen Acupunctuur met uw gegevens omgaat en geeft u daarvoor toestemming.</p>
+        </div>
+
+        <input type="hidden" id="prepareDate" name="selDate" />
+        <input type="hidden" id="prepareId" name="selTimeslotId" />
+    }
+</div>
+
+@section scripts {
+    <script src="~/js/Reservation.js" type="text/javascript"></script>
+}

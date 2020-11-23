@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+@model Acupunctuur.Models.PageViewModel
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Html.DisplayName(Model.CurrentPage.DisplayName) - Prikkebeen Acupunctuur</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+ 
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container justify-content-center">
+                <div>
+                    <a class="navbar-brand text-nowrap" asp-controller="Page" asp-action="Main">
+                        <img src="~/img/acupuncture.svg" width="40" height="40"/>
+                        Prikkebeen Acupunctuur
+                    </a>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        @foreach (var page in Model.Pages) {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark text-nowrap" asp-controller="Page" asp-action="Main" asp-route-id=@Html.DisplayName(page.Id.ToString())>@Html.DisplayName(page.DisplayName)</a>
+                            </li>
+                        }
+
+                        @using Acupunctuur.Business
+                        @inject SessionManager sessMan
+
+                        @{
+                            bool isLoggedIn = sessMan.IsLoggedIn();
+                            bool isAdmin = sessMan.IsAdmin();
+                        }
+
+                        @if (!isAdmin) {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark text-nowrap" asp-controller="Reservation" asp-action="Schedule">Reserveren</a>
+                            </li>
+                        }
+
+
+                        @if (!isLoggedIn) {
+                            <li class="nav-item">
+                                <a class="nav-link text-primary text-nowrap ml-sm-3" asp-controller="User" asp-action="Login">Inloggen</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark text-nowrap" asp-controller="User" asp-action="Registration">Registreren</a>
+                            </li>
+                        }
+
+                        @if (isLoggedIn) {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-primary text-nowrap ml-sm-3" href="#" data-toggle="dropdown">Welkom, @sessMan.GetUserName()!</a>
+                                <div class="dropdown-menu">
+                                    @if (isAdmin)
+                                    {
+                                        <a class="dropdown-item text-dark text-nowrap" asp-controller="Page" asp-action="EditIndex">Bewerk pagina</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-dark text-nowrap" asp-controller="Reservation" asp-action="AdminOverview">Agenda</a>
+                                        <a class="dropdown-item text-dark text-nowrap" asp-controller="User" asp-action="ClientSearch">Klant zoeken</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-dark text-nowrap" asp-controller="Reservation" asp-action="CancelOverview">Overzicht geannuleerde reserveringen</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-dark text-nowrap" asp-controller="Reservation" asp-action="BlockPeriod">Periode blokkeren</a>
+                                        <a class="dropdown-item text-dark text-nowrap" asp-controller="Reservation" asp-action="BlockedOverview">Overzicht geblokkeerde periodes</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="dropdown-item text-dark text-nowrap" asp-controller="Reservation" asp-action="ClientOverview">Afspraken</a>
+                                    }
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-dark text-nowrap" asp-controller="User" asp-action="ChangePassword">Wijzig wachtwoord</a>
+                                    <a class="dropdown-item text-dark text-nowrap" asp-controller="User" asp-action="Logout">Uitloggen</a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @{
+                if (Model.Dynamic) {
+                    IgnoreBody();
+                    @Html.Raw(Model.CurrentPage.Content.RawHtml);
+                } else {
+                    @RenderBody();
+                }
+            }
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - Prikkebeen Acupunctuur
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

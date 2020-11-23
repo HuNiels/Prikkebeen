@@ -1,0 +1,185 @@
+﻿@model Acupunctuur.Models.RegistrationViewModel
+
+<h2 class="display-4 text-center">Registratieformulier</h2>
+
+<div class="w-75 mx-auto">
+
+    @{
+        string dateFormat = "yyyy-MM-dd";
+        string selectedDay = @Model.SelectedDay.ToString(dateFormat);
+
+        if (Model.Error == 1) {
+            <p class="text-danger text-center">Klant staat al geregistreerd</p>
+        }
+    }
+
+    @using (Html.BeginForm("Registration", "User", FormMethod.Post)) {
+        @Html.AntiForgeryToken()
+<div class="container">
+    <div class="row">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input class="w-100" type="text" id="firstName" name="firstName" placeholder="Voornaam" autofocus />
+        </div>
+        <div class="col-4 px-0">
+            <span class="ml-2 text-nowrap text-danger" id="firstNameError"></span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input class="w-100" type="text" id="lastName" name="lastName" placeholder="Achternaam" />
+        </div>
+        <div class="col-4 px-0">
+            <span class="ml-2 text-nowrap text-danger" id="lastNameError"></span>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-5 px-0">
+                        <label for="dobField">Geboortedatum</label>
+                    </div>
+                    <div class="col-7 pl-1 pr-0">
+                        <input class="w-100" type="date" id="dobField" name="dateOfBirth" value="@selectedDay" max="@selectedDay" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 px-0"></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-8 px-0">
+                        <input class="w-100" type="text" id="address" name="address" placeholder="Adres" />
+                    </div>
+                    <div class="col-4 pl-1 pr-0">
+                        <input class="w-100" type="text" id="houseNumber" name="houseNumber" placeholder="Huisnr." />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 px-0">
+            <span class="ml-2 text-nowrap text-danger" id="addressError"></span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input class="w-100" type="text" id="postalCode" name="postalCode" placeholder="Postcode" />
+        </div>
+        <div class="col-4 px-0">
+            <span class="ml-2 text-nowrap text-danger" id="postalCodeError"></span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input class="w-100" type="text" id="city" name="city" placeholder="Woonplaats" />
+        </div>
+        <div class="col-4 px-0">
+            <span class="ml-2 text-nowrap text-danger" id="cityError"></span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <select class="w-100 mx-auto" id="country" name="country">
+                <option value="Nederland">Nederland</option>
+                <option value="België">België</option>
+                <option value="Duitsland">Duitsland</option>
+            </select>
+        </div>
+        <div class="col-4 px-0"></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-2 pl-0 pr-1">
+                        <input class="w-100" type="text" id="telephoneNumberPrefix" value="+31" disabled/>
+                    </div>
+                    <div class="col-10 px-0">
+                        <input class="w-100" type="tel" id="telephoneNumberMain" placeholder="Telefoonnummer" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 px-0">
+            <span class="ml-2 text-nowrap text-danger" id="telephoneNumberError"></span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input class="w-100" type="email" id="email" name="email" placeholder="Emailadres" />
+        </div>
+        <div class="col-4 px-0">
+            <span class="ml-2 text-nowrap text-danger" id="emailError"></span>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <span class="text-secondary">
+                <small>Wachtwoord eisen:</small>
+            </span>
+            <ul class="my-auto text-secondary">
+                <li><small>Maximaal 64 karakters</small></li>
+                <li><small>Minimaal 1 letter</small></li>
+                <li><small>Speciale tekens: alleen @@#$%!&* toegestaan</small></li>
+            </ul>
+        </div>
+        <div class="col-4 px-0"></div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input class="w-100" type="password" id="password1" name="password" placeholder="Wachtwoord" />
+        </div>
+        <div class="col-4 px-0">
+            <span class="ml-2 text-nowrap text-danger" id="passwordError"></span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input class="w-100" type="password" id="password2" placeholder="Wachtwoord herhalen" />
+        </div>
+        <div class="col-4 px-0"></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input type="radio" id="radioNewUser" name="newUser" value="true" checked />
+            <label for="radioNewUser">Nieuwe klant</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0">
+            <input type="radio" id="radioExistingUser" name="newUser" value="false" />
+            <label for="radioExistingUser">Bestaande klant</label>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-4 px-0"></div>
+        <div class="col-4 px-0 text-center">
+            <input type="submit" id="submit" value="Registreren" />
+        </div>
+    </div>
+
+    <input type="hidden" id="telephoneNumber" name="telephoneNumber"/>
+</div>
+    }
+</div>
+
+@section scripts {
+    <script src="~/js/Registration.js" type="text/javascript" ></script>
+}

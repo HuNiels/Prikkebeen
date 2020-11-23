@@ -1,0 +1,13 @@
+﻿@model Acupunctuur.Models.EditIndexViewModel
+
+<h2 class="display-4 text-center">Pagina bewerken</h2>
+
+<div class="w-50 mx-auto">
+    <ul class="list-group text-center">
+         @foreach (var page in Model.EditPages) {
+            <li class="list-group-item">
+                <a asp-controller="Page" asp-action="Edit" asp-route-id=@Html.DisplayName(page.Content.Id.ToString())>@Html.DisplayName(page.DisplayName)</a>
+            </li>
+         }
+    </ul>
+</div>

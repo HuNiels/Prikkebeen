@@ -1,0 +1,120 @@
+﻿@model Acupunctuur.Models.BlockViewModel
+
+<h2 class="display-4 text-center">Periode Blokkeren</h2>
+
+<div class="w-75 mx-auto">
+
+    @{
+        string dateFormat = "yyyy-MM-dd";
+        string today = Model.Today.ToString(dateFormat);
+
+        switch (Model.Error) {
+            case 1:
+                <p class="text-danger text-center">Er staan reserveringen in de periode die u wil blokkeren</p>
+                break;
+            case 2:
+                <p class="text-danger text-center">De einddatum en eindtijd is voor de startdatum en starttijd</p>
+                break;
+        }
+    }
+
+    @using (Html.BeginForm("BlockPeriod", "Reservation", FormMethod.Post)) {
+        <div class="container">
+            <div class="mt-3">
+                <div class="row">
+                    <div class="col-4 px-0"></div>
+                    <div class="col-4 px-0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5 px-0">
+                                    <label for="stDate">Start Datum</label>
+                                </div>
+                                <div class="col-7 pl-1 pr-0">
+                                    <input class="w-100" type="date" id="stDate" name="startDate" value="@today" min="@today" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 px-0"></div>
+                </div>
+                <div class="row">
+                    <div class="col-4 px-0"></div>
+                    <div class="col-4 px-0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5 px-0">
+                                    <label for="stTime">Start Tijdstip</label>
+                                </div>
+                                <div class="col-7 pl-1 pr-0">
+                                    <input class="w-100" type="time" id="stTime" name="startTime" value="08:00" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 px-0"></div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="row">
+                    <div class="col-4 px-0"></div>
+                    <div class="col-4 px-0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5 px-0">
+                                    <label for="endDate">Eind Datum</label>
+                                </div>
+                                <div class="col-7 pl-1 pr-0">
+                                    <input class="w-100" type="date" id="endDate" name="endDate" value="@today" min="@today" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 px-0"></div>
+                </div>
+                <div class="row">
+                    <div class="col-4 px-0"></div>
+                    <div class="col-4 px-0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5 px-0">
+                                    <label for="endTime">Eind Tijdstip</label>
+                                </div>
+                                <div class="col-7 pl-1 pr-0">
+                                    <input class="w-100" type="time" id="endTime" name="endTime" value="20:00" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 px-0"></div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-4 px-0"></div>
+                <div class="col-4 px-0">
+                    <input class="w-100" type="text" maxlength="50" id="description" name="description" placeholder="Beschrijving intern" />
+                </div>
+                <div class="col-4 px-0">
+                    <span class="ml-2 text-nowrap text-danger" id="descriptionError"></span>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-4 px-0"></div>
+                <div class="col-4 px-0">
+                    <textarea class="w-100" type="text" rows="4" id="customerMessage" name="customerMessage" placeholder="Melding voor Klanten (optioneel)"></textarea>
+                </div>
+                <div class="col-4 px-0"></div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-4 px-0"></div>
+                <div class="col-4 px-0 text-center">
+                    <input type="submit" id="submit" value="Blokkeren" />
+                </div>
+                <div class="col-4 px-0"></div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script src="~/js/BlockPeriod.js" type="text/javascript"></script>
+}

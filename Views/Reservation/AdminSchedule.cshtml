@@ -1,0 +1,57 @@
+﻿@model Acupunctuur.Models.AdminReservationViewModel
+
+<h2 class="display-4 text-center">Afspraak maken voor klant</h2>
+
+<div class="text-center">
+    @using (Html.BeginForm("AdminReserve", "Reservation", FormMethod.Post)) {
+        @using Acupunctuur.Business
+        @inject SessionManager sessMan
+
+        string dateFormat = "yyyy-MM-dd";
+        string selectedDay = @Model.SelectedDay.ToString(dateFormat);
+
+    <div class="mt-3">
+        <img id="yesterdayButton" style="cursor:pointer" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iYmxhY2siIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMTUuNDEgNy40MUwxNCA2bC02IDYgNiA2IDEuNDEtMS40MUwxMC44MyAxMnoiLz48L3N2Zz4=" />
+        <input type="date" id="dateField" name="date" value="@selectedDay" min="@selectedDay" max="@Model.LastDay.ToString(dateFormat)" />
+        <img id="tomorrowButton" style="cursor:pointer" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iYmxhY2siIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMTAgNkw4LjU5IDcuNDEgMTMuMTcgMTJsLTQuNTggNC41OUwxMCAxOGw2LTZ6Ii8+PC9zdmc+" />
+    </div>
+        <div class="mt-2">
+            <table class="table table-bordered w-25 mx-auto" id="timeslotTable">
+            </table>
+        </div>
+
+        <div>
+            <span class="mt-2 text-danger" style="display:none" id="weekendError">Selecteer een werkdag (maandag - vrijdag)</span>
+            <span class="mt-2 text-danger" style="display:none" id="selectionError">Selecteer tijdstip</span>
+        </div>
+
+        <div class="w-75 mx-auto">
+            <span class="mt-2 text-danger" id="blockedMessage"></span>
+        </div>
+
+        @if (sessMan.IsLoggedIn() && Model.HasAReservation) {
+            <div>
+                <span class="mt-2 text-danger" id="hasReservationError">U heeft al een reservering. Klanten mogen maximaal 1 reservering hebben staan.</span>
+            </div>
+        }
+        <div class="mt-2">
+            @if (sessMan.IsLoggedIn() && !Model.HasAReservation) {
+                <input type="submit" id="submitButton" value="Reserveren" />
+            } else {
+                <input type="submit" id="submitButton" value="Reserveren" disabled />
+            }
+        </div>
+        <div class="mt-5 w-50 text-left mx-auto">
+            <p class="text-center"><b>! Wet Algemene Verordening Gegevensbescherming !</b></p>
+            <p>Lees voorafgaande aan de reservering de pagina betreffende de bescherming van uw privé gegevens. Prikkebeen Acupunctuur geeft daar uitleg over welke gegevens van u nodig zijn om te kunnen werken en waarvoor deze worden gebruikt. Indien u reserveert geeft u daarmee aan op de hoogte te zijn van de wijze waarop Prikkebeen Acupunctuur met uw gegevens omgaat en geeft u daarvoor toestemming.</p>
+        </div>
+
+        <input type="hidden" id="prepareUserId" name="userId" value="@Model.User.Id" />
+        <input type="hidden" id="prepareDate" name="selDate" />
+        <input type="hidden" id="prepareId" name="selTimeslotId" />
+    }
+</div>
+
+@section scripts {
+    <script src="~/js/Reservation.js" type="text/javascript"></script>
+}

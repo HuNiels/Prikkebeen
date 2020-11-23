@@ -1,0 +1,19 @@
+﻿@model Acupunctuur.Models.AdminConfirmationViewModel
+
+<h2 class="display-4 text-center">Reserveringsbevestiging</h2>
+
+<div class="text-center w-75 mx-auto mt-5">
+    @using Acupunctuur.Business
+    @inject SessionManager sessMan
+    @{
+        string dateFormat = "dddd dd-MM-yyyy";
+        string selectedDay = @Model.ReservedDay.ToString(dateFormat, new System.Globalization.CultureInfo("nl-NL"));
+
+        TimeSpan start = Model.TimeSlot.StartTime;
+        TimeSpan end = Model.TimeSlot.EndTime;
+        string startTime = $"{start.Hours.ToString().PadLeft(2, '0')}:{start.Minutes.ToString().PadLeft(2, '0')}";
+        string endTime = $"{end.Hours.ToString().PadLeft(2, '0')}:{end.Minutes.ToString().PadLeft(2, '0')}";
+    }
+    <h2>Gefeliciteerd, @sessMan.GetUserName()!</h2>
+    <p>U heeft een afspraak voor <u>@Model.UserName</u> gemaakt op <u>@selectedDay</u> om <u>@startTime</u> t/m <u>@endTime</u>.</p>
+</div>
